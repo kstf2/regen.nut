@@ -3,5 +3,5 @@ VScript for making (limited) ammo regen better in TF2 jump maps. See the forum p
 
 **Demonstration Video:** https://youtu.be/N8VZVMei1zc
 
-**Forum Post:**
+**Forum Post:** https://jump.tf/forum/index.php?topic=3456.0
 
