@@ -3,8 +3,8 @@
 regen.nut: Better Ammo Regen for Jump Maps
 by Kingstripes, ficool2
 
-Repo:
-Forum Post:
+Repo: https://github.com/kstf2/regen.nut
+Forum Post: https://jump.tf/forum/index.php?topic=3456.0
 ====================================================================================================
 */
 
@@ -75,7 +75,7 @@ Description:    Similar to func_regenerate triggers except there is no 3.0 secon
 
 Demonstration: https://youtu.be/N8VZVMei1zc?t=5
 
-Usage:
+Usage: https://jump.tf/forum/index.php?topic=3456.0
 ====================================================================================================
 */
 
@@ -160,7 +160,7 @@ Description:    Inspired by Momentum Mod's proposed system for dealing with limi
 
 Demonstration: https://youtu.be/N8VZVMei1zc?t=62
 
-Usage:
+Usage: https://jump.tf/forum/index.php?topic=3456.0
 ====================================================================================================
 */
 
@@ -922,7 +922,7 @@ Description:    A VScript re-implementation of func_regenerate trigger, made by 
 
 Demonstration: https://youtu.be/N8VZVMei1zc?t=177
 
-Usage:
+Usage: https://jump.tf/forum/index.php?topic=3456.0
 ====================================================================================================
 */
 
