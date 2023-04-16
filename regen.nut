@@ -704,7 +704,7 @@ Z-vel is canceled if it is higher than initial jump speed (277u/s). Aggressive b
 }
 
 // TODO: May want to consider checking if amount is even set (user error)
-function RocketLimit(amount, destroy=false)
+function RocketLimit(amount, destroy = false)
 {
     local player = activator
     if (!player || !player.IsPlayer() || player.GetPlayerClass() != Constants.ETFClass.TF_CLASS_SOLDIER)
@@ -718,7 +718,7 @@ function RocketLimit(amount, destroy=false)
     }
 }
 
-function ShotgunLimit(amount, destroy=false)
+function ShotgunLimit(amount, destroy = false)
 {
     local player = activator
     if (!player || !player.IsPlayer() || player.GetPlayerClass() != Constants.ETFClass.TF_CLASS_SOLDIER)
