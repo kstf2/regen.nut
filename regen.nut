@@ -632,6 +632,27 @@ AnimSequences[LOCH_N_LOAD_IDX] <- {idle = 25, reloadStart = 36, reloadFinish = 3
     }
 }
 
+/*
+Function used by "destroy" triggers and separate miscellaneous KillVelocityEx() function
+Because projectiles are destroyed a server frame *later*, we call this to prevent pre-speed cheating
+
+X-vel/Y-vel are both canceled if either exceeds max walk speed for a class + 30u.
+Z-vel is canceled if it is higher than initial jump speed (277u/s). Aggressive but necessary for anti-cheat.
+*/
+::CTFPlayer.KillVelocityAboveThreshold <- function()
+{
+    local vel = this.GetAbsVelocity()
+    local maxWalkSpeed = NetProps.GetPropFloat(this, "m_flMaxspeed") + 30
+
+    if (abs(vel.x) > maxWalkSpeed || abs(vel.y) > maxWalkSpeed)
+    {
+        vel.x = 0
+        vel.y = 0
+    }
+
+    this.SetAbsVelocity(Vector(vel.x, vel.y, vel.z > 277 ? 0 : vel.z))
+}
+
 ::CTFPlayer.DestroyAndLimit <- function(slot, amount, destroy)
 {
     local playerClass = this.GetPlayerClass()
@@ -640,30 +661,18 @@ AnimSequences[LOCH_N_LOAD_IDX] <- {idle = 25, reloadStart = 36, reloadFinish = 3
     Cancel velocity here because projectiles are destroyed the tick *after* touching the trigger.
     Without it, you could (for example) pre-place stickies and det within that 1 tick window to get
     significantly more height/speed at the start of the jump and it would not count towards the sticky limit amount.
-
-    X-vel/Y-vel are both canceled if either exceeds max walk speed for a class + 30u.
-    Z-vel is canceled if it is higher than initial jump speed (277u/s). Aggressive but necessary for anti-cheat.
     */
     if (destroy && this.GetMoveType() != Constants.EMoveType.MOVETYPE_NOCLIP)
     {
-        local vel = this.GetAbsVelocity()
-        local maxWalkSpeed = NetProps.GetPropFloat(this, "m_flMaxspeed") + 30
-
-        if (abs(vel.x) > maxWalkSpeed || abs(vel.y) > maxWalkSpeed)
-        {
-            vel.x = 0
-            vel.y = 0
-        }
+        this.KillVelocityAboveThreshold()
 
         switch (playerClass)
         {
             case Constants.ETFClass.TF_CLASS_SOLDIER:
                 this.DestroySollyProjectiles()
-                this.SetAbsVelocity(Vector(vel.x, vel.y, vel.z > 277 ? 0 : vel.z))
                 break
             case Constants.ETFClass.TF_CLASS_DEMOMAN:
                 this.DestroyDemoProjectiles()
-                this.SetAbsVelocity(Vector(vel.x, vel.y, vel.z > 277 ? 0 : vel.z))
                 break
         }
     }
