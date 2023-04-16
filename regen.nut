@@ -1157,4 +1157,31 @@ function KillVelocity(playerClass = any)
     player.SetAbsVelocity(Vector(0, 0, 0))
 }
 
+/*
+"Extended" version of KillVelocity():
+Only cancels velocity when above a certain threshold. See KillVelocityAboveThreshold()
+
+Can be used in combination with DestroySoldierProjectiles() or DestroyDemomanProjectiles()
+to re-create "destroy" trigger anti-cheat separately from its core ammo limit functionality
+*/
+function KillVelocityEx(playerClass = any)
+{
+    local player = activator
+    if (!player || !player.IsPlayer())
+    {
+        return
+    }
+
+    if (playerClass != any && player.GetPlayerClass() != playerClass)
+    {
+        return
+    }
+
+    if (player.GetMoveType() != Constants.EMoveType.MOVETYPE_NOCLIP)
+    {
+        DebugPrint("kill velocity when above threshold (wrapper function)", player)
+        player.KillVelocityAboveThreshold()
+    }
+}
+
 __CollectGameEventCallbacks(this)
