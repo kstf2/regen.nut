@@ -10,7 +10,7 @@ Forum Post: https://jump.tf/forum/index.php?topic=3456.0
 
 ClearGameEventCallbacks()
 
-const VERSION = "1.0"
+const VERSION = "1.1"
 
 // Condensed version of ETFClass class constants, used for user-supplied arguments:
 const scout = 1
