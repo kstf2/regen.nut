@@ -1109,9 +1109,9 @@ Description:    Functions that may be useful as standalone functions. For exampl
 
 /*
 Keep in mind rockets are removed the server frame *after* this output runs.
-Depending on your situation, you may want to add KillVelocity() to the trigger
-that calls this function to prevent player knockback during that small
-window of time.
+Depending on your situation, you may want to add KillVelocity() or KillVelocityEx()
+to the trigger that calls this function to prevent player knockback during that
+small window of time.
 */
 function DestroySoldierProjectiles()
 {
@@ -1121,14 +1121,15 @@ function DestroySoldierProjectiles()
         return
     }
 
+    DebugPrint("destroy soldier projectiles (wrapper function)", player)
     player.DestroySollyProjectiles()
 }
 
 /*
 Keep in mind pipes/stickies are removed the server frame *after* this output runs.
-Depending on your situation, you may want to add KillVelocity() to the trigger
-that calls this function to prevent players from detonating during that small
-window of time.
+Depending on your situation, you may want to add KillVelocity() or KillVelocityEx()
+to the trigger that calls this function to prevent players from detonating during
+that small window of time.
 */
 function DestroyDemomanProjectiles()
 {
@@ -1138,6 +1139,7 @@ function DestroyDemomanProjectiles()
         return
     }
 
+    DebugPrint("destroy demoman projectiles (wrapper function)", player)
     player.DestroyDemoProjectiles()
 }
 
@@ -1154,6 +1156,7 @@ function KillVelocity(playerClass = any)
         return
     }
 
+    DebugPrint("completely kill velocity (wrapper function)", player)
     player.SetAbsVelocity(Vector(0, 0, 0))
 }
 
