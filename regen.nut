@@ -407,11 +407,10 @@ AnimSequences[LOCH_N_LOAD_IDX] <- {idle = 25, reloadStart = 36, reloadFinish = 3
         local limitAmount = self.GetScriptScope().limitAmount
         if (self.Clip1() == 0 && limitAmount != 0 && self.GetReserveAmmo() != limitAmount)
         {
-            local amount = self.GetScriptScope().limitAmount
-            self.SetReserveAmmo(amount)
+            self.SetReserveAmmo(limitAmount)
             SetEntityColor(self, 255, 255, 255, 100)
 
-            DebugPrint(self + " is out of ammo! Make translucent and set reserve ammo to " + amount, self.GetOwner())
+            DebugPrint(self + " is out of ammo! Make translucent and set reserve ammo to " + limitAmount, self.GetOwner())
         }
 
         /*
