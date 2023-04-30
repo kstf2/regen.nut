@@ -996,6 +996,8 @@ function FuncRegenStart(playerClass = any)
         return
     }
 
+    DebugPrint("entering FuncRegen trigger " + trigger, player)
+
     if (playerClass != any && player.GetPlayerClass() != playerClass)
     {
         return
@@ -1019,6 +1021,8 @@ function FuncRegenEnd()
     {
         return
     }
+
+    DebugPrint("leaving FuncRegen trigger " + trigger, player)
 
     local touchers = trigger.GetScriptScope().touchers
     local idx = touchers.find(player)
