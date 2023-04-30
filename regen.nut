@@ -143,6 +143,7 @@ function OnGameEvent_player_spawn(params)
         local player = GetPlayerFromUserID(params.userid)
         player.RegenInit()
         player.RegenReset()
+        InstantClassChangeCheck(player)
     }
 }
 
@@ -1187,6 +1188,97 @@ function KillVelocityEx(playerClass = any)
     {
         DebugPrint("kill velocity when above threshold (wrapper function)", player)
         player.KillVelocityAboveThreshold()
+    }
+}
+
+/*
+====================================================================================================
+Instant class change detection logic
+(for better JA and ECJ compatibility)
+
+Description:    Typically when a player changes class on a jump map, and has hud_classautokill set to 1,
+                they will automatically die before respawning as the new class. During death, the player
+                is no longer solid, which means all triggers will be exited (EndTouch).
+
+                However, in certain cases the player will not die during a class change:
+                - The map is using a func_respawnroom brush and the player changes class inside it
+                - The server is using a plugin that force respawns the player during class change
+                  (i.e. jse_core on Jump Academy or jumpassist on ECJ). Tempus does *not* do this.
+
+                As a consequence, any OnStartTouch/OnEndTouch outputs on a trigger will not refire
+                if the player changes class and remains inside that trigger pre and post-spawn.
+
+                An example of why this is a problem can be seen when using a FuncRegenStart(demoman)
+                trigger across the whole map. If the player spawns as demo, they will receive regen.
+                When they change to soldier, they will *continue* to receive this regen because
+                FuncRegenStart/End never fires again.
+
+                While there are a few ways of fixing this (e.g. OnTrigger output), the following logic
+                detects an instant class change respawn, and acts on that by making the player not solid
+                for a single server frame (i.e. replicating the same functionality that happens during death).
+                This way, all trigger OnStartTouch/OnEndTouch outputs will fire again on respawn.
+====================================================================================================
+*/
+
+function RemoveNotSolidFlag()
+{
+    local player = activator
+    if (!player || !player.IsPlayer())
+    {
+        return
+    }
+
+    if (NetProps.GetPropInt(player, "m_lifeState") != 0) // i.e. dead
+        return
+
+    player.RemoveSolidFlags(Constants.FSolid.FSOLID_NOT_SOLID)
+}
+
+
+::InstantClassChangeCheck <- function(player)
+{
+    if (player.ValidateScriptScope())
+    {
+        local scope = player.GetScriptScope()
+
+        if (!("lastChangeClassTime" in scope))
+            return
+
+        if (scope.lastChangeClassTime != Time())
+            return
+
+        /*
+        This logic only runs when:
+        - The player is inside a func_respawnroom brush (rarely used on modern jump maps)
+        - The server is using a plugin that force respawns the player on class change
+        */
+        DebugPrint("detected instant class change", player)
+        player.AddSolidFlags(Constants.FSolid.FSOLID_NOT_SOLID)
+        EntFire("!self", "RunScriptCode", "RemoveNotSolidFlag()", 0.015, player)
+    }
+}
+
+
+function OnGameEvent_player_changeclass(params)
+{
+    if ("userid" in params && "class" in params)
+    {
+        local player = GetPlayerFromUserID(params.userid)
+
+        if (player && player.IsPlayer() && player.ValidateScriptScope())
+        {
+            local scope = player.GetScriptScope()
+
+            /*
+            This will only ever be true when:
+            - hud_classautokill is 0 and the server does *not* instantly respawn players on class change
+            - The player switches back to their current class while dead
+            */
+            if (player.GetPlayerClass() == params["class"])
+                scope.lastChangeClassTime <- 0.0
+            else
+                scope.lastChangeClassTime <- Time()
+        }
     }
 }
 
