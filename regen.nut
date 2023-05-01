@@ -1220,6 +1220,8 @@ Description:    Typically when a player changes class on a jump map, and has hud
 ====================================================================================================
 */
 
+const TOLERANCE = 0.001
+
 function RemoveNotSolidFlag()
 {
     local player = activator
@@ -1244,8 +1246,19 @@ function RemoveNotSolidFlag()
         if (!("lastChangeClassTime" in scope))
             return
 
-        if (scope.lastChangeClassTime != Time())
+        /*
+        A scope.lastChangeClassTime != Time() check here would be fine if it wasn't for
+        jumpassist force respawning the player on the next server frame when you die.
+        This death does *not* result in triggers being exited, and if you die and change
+        class at the same time (e.g. kill;join_class soldier in console), you spawn twice
+        in the span of 2 frames. Hence widen the window for detecting instant class change to
+        2 frames to compensate for this edge case
+        */
+        if (scope.lastChangeClassTime < (Time() - 0.015)
+            && fabs(scope.lastChangeClassTime - (Time() - 0.015)) > TOLERANCE)
+        {
             return
+        }
 
         /*
         This logic only runs when:
