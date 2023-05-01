@@ -10,7 +10,7 @@ Forum Post: https://jump.tf/forum/index.php?topic=3456.0
 
 ClearGameEventCallbacks()
 
-const VERSION = "1.2"
+const VERSION = "1.2.0"
 
 // Condensed version of ETFClass class constants, used for user-supplied arguments:
 const scout = 1
@@ -61,7 +61,7 @@ if (!("CVAR_REGEN_DEBUG_MODE" in getroottable()))
         clientName = NetProps.GetPropString(client, "m_szNetname")
     }
 
-    printl("[regen.nut|" + Time() + "] " + (clientName != null ? clientName + ": " : "") + message)
+    printl("[regen.nut|" + format("%.2f", Time()) + "] " + (clientName != null ? clientName + ": " : "") + message)
 }
 
 /*
