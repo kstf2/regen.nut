@@ -10,7 +10,7 @@ Forum Post: https://jump.tf/forum/index.php?topic=3456.0
 
 ClearGameEventCallbacks()
 
-const VERSION = "1.2.0"
+const VERSION = "1.2.1"
 
 // Condensed version of ETFClass class constants, used for user-supplied arguments:
 const scout = 1
@@ -341,44 +341,13 @@ AnimSequences[LOCH_N_LOAD_IDX] <- {idle = 25, reloadStart = 36, reloadFinish = 3
 
 ::CTFPlayer.DestroySollyProjectiles <- function()
 {
-    local primaryWep = this.GetWeaponBySlot(Constants.ETFClass.TF_CLASS_SOLDIER, TF_WEAPONSLOTS.PRIMARY)
-    local secondaryWep = this.GetWeaponBySlot(Constants.ETFClass.TF_CLASS_SOLDIER, TF_WEAPONSLOTS.SECONDARY)
-
-    if (primaryWep)
-    {
-        if (primaryWep.GetClassname().find("tf_weapon_rocketlauncher") != null)
-        {
-            this.DestroyProjectile("tf_projectile_rocket")
-        }
-        else if (primaryWep.GetClassname() == "tf_weapon_particle_cannon")
-        {
-            this.DestroyProjectile("tf_projectile_energy_ball")
-        }
-    }
-
-    if (secondaryWep && secondaryWep.GetClassname() == "tf_weapon_raygun")
-    {
-        this.DestroyProjectile("tf_projectile_energy_ring")
-    }
+    this.DestroyProjectile("tf_projectile_rocket")
+    this.DestroyProjectile("tf_projectile_energy*") // _ball + _ring
 }
 
 ::CTFPlayer.DestroyDemoProjectiles <- function()
 {
-    local primaryWep = this.GetWeaponBySlot(Constants.ETFClass.TF_CLASS_DEMOMAN, TF_WEAPONSLOTS.PRIMARY)
-    local secondaryWep = this.GetWeaponBySlot(Constants.ETFClass.TF_CLASS_DEMOMAN, TF_WEAPONSLOTS.SECONDARY)
-
-    if (primaryWep)
-    {
-        if (primaryWep.GetClassname() == "tf_weapon_grenadelauncher" || primaryWep.GetClassname() == "tf_weapon_cannon")
-        {
-            this.DestroyProjectile("tf_projectile_pipe")
-        }
-    }
-
-    if (secondaryWep && secondaryWep.GetClassname() == "tf_weapon_pipebomblauncher")
-    {
-        this.DestroyProjectile("tf_projectile_pipe_remote")
-    }
+    this.DestroyProjectile("tf_projectile_pipe*") // + _remote
 }
 
 ::CTFPlayer.GetWeaponBySlot <- function(playerClass, slot)
